@@ -1,0 +1,20 @@
+<!Doctype html>
+<html>
+
+
+<body>
+    <ul>
+        {% for user in users %}
+    <li>
+        {{user.name}}|
+        <a href="/user/{{user.id}}">show |</a>
+        <a href="/user/{{user.id}}/delete">delete</a>
+        <a href="/user/{{user.id}}/update">update</a>
+    </li>
+    {% endfor %}
+        <a href="/user/new">Create New</a>
+    </ul>
+    
+    
+</body>
+</html>

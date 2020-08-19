@@ -1,41 +1,85 @@
-const {Sequelize} =require('sequelize')
+const {Op} =require('sequelize')
+const User =require('../models/user')
+const by_name =require('../routes/by_name')
 
-const sequelize = new Sequelize({
-    dialect:'mysql',
-    host:'localhost',
-    port: 3306,
-    username: 'employee_data',
-    password: 'Employee_data12!'
-})
-
-const by_name = (req,res)=>{
-    const data={
-        name:req.params.name
-    }
-    res.render('user_name',data)
-}
 
 const by_id = (req,res)=>{
-    sequelize.authenticate().then(
-        ()=>res.send('Successfull'),
-        ()=>res.send('Unsuccessfull')
-
+    User.findByPk(req.params.id).then(
+        (user) =>{
+            res.render('single_user',{user})
+        },
+        (err) =>res.send(err)
     )
-    
-    // let message =''
-    // try{
-    //     await sequelize.authenticate();
-    //     message ='Successfull'
 
-    // }catch(error){
-    //     message ='UnSuccessfull'
-
-    // }
-    // res.render('message')
 }
+const all =(req,res)=>{
+    User.findAll().then(
+        (users)=>res.render('user_all',{users}),
+        (err)=>res.send(err)
+    )
+}
+
+const form_create =(req,res) =>{
+    res.render('form_create'
+    )
+}
+const post_data=(req,res)=>{
+    //res.send(req.body)
+    User.create(req.body).then
+    (
+        (user)=>res.send(user),
+        (err)=>res.send(err)
+    )
+}
+const delete_id=(req,res)=>{
+    User.destroy({where : {
+            id:{
+                [Op.eq]:req.params.id
+            }
+
+        }}
+    ).then(
+        ()=>res.redirect('/user'),
+        (err)=>res.send(err)
+    )
+
+
+}
+const form_update=(req,res)=>{
+    User.findByPk(req.params.id).then(
+        (user) =>{
+            res.render('form_update',{user})
+        },
+        (err) =>res.send(err)
+    )
+
+}
+const update_by_id=(req,res)=>{
+    User.update(
+        req.body,
+        {
+            where:{
+                id: req.params.id
+            }
+        }
+    ).then(
+        (user)=>res.redirect(`/user/${req.params.id}`),
+        (err) =>res.send(arr)
+    )
+
+}
+
+
 
     
 module.exports ={
     by_name,
-    by_id
+    by_id,
+    form_create,
+    post_data,
+    all,
+    delete_id,
+    form_update,
+    update_by_id
+
 }
